@@ -7,4 +7,13 @@ const apiClient = axios.create({
     },
 });
 
+// Legger til JWT-token i alle forespørsler hvis brukeren er logget inn
+apiClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 export default apiClient;
