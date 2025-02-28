@@ -20,6 +20,10 @@ export interface LoginResponse {
 }
 
 export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
-    const response = await apiClient.post("/auth/login", data);
+    const response = await apiClient.post("/auth/login", JSON.stringify(data), {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
     return response.data;
 };
