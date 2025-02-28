@@ -17,7 +17,8 @@ export default function Login() {
         try {
             const response = await loginUser({ username, password });
             localStorage.setItem("token", response.token); // Lagre token for senere bruk
-            alert("Innlogging vellykket! 🎉");
+            localStorage.setItem("username", username);
+            window.dispatchEvent(new Event("authChange"));
             navigate("/dashboard"); // Send brukeren til en beskyttet side
         } catch (err) {
             console.log(err)
