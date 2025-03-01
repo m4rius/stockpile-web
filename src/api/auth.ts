@@ -1,7 +1,9 @@
 import apiClient from "./apiClient";
 
 export interface RegisterData {
-    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
     password: string;
 }
 
@@ -11,12 +13,14 @@ export const registerUser = async (data: RegisterData) => {
 };
 
 export interface LoginData {
-    username: string;
+    email: string;
     password: string;
 }
 
 export interface LoginResponse {
     token: string;
+    firstName: string;
+    lastName: string;
 }
 
 export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
