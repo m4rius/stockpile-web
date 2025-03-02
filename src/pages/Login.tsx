@@ -21,8 +21,9 @@ export default function Login() {
             localStorage.setItem("firstName", response.firstName); // Lagrer fornavn til senere bruk
             localStorage.setItem("lastName", response.lastName); // Lagrer etternavn
             window.dispatchEvent(new Event("authChange")); // 🔥 Oppdater UI
-            navigate("/dashboard");
+            navigate("/");
         } catch (err) {
+            console.log(err)
             setError("Feil e-post eller passord.");
         }
     };

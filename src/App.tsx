@@ -1,18 +1,17 @@
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./queryClient";
+import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes";
 import Navbar from "@/components/Navbar.tsx";
 
 const App = () => {
     return (
-        <QueryClientProvider client={queryClient}>
+        <Router>
             <div className="flex flex-col min-h-screen">
                 <Navbar />
                 <main className="flex-grow">
                     <AppRoutes />
                 </main>
             </div>
-        </QueryClientProvider>
+        </Router>
     );
 };
 
