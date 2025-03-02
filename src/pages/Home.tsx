@@ -35,7 +35,7 @@ export default function Home() {
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-6">
-                    <h1 className="text-3xl font-bold mb-4">Hva vil du gjøre?</h1>
+                    <h1 className="text-3xl font-bold mb-4">Beredskapslager</h1>
                     <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md">
                         <Link to="/stockpile" className="w-full">
                             <Button className="text-xl px-8 py-4 w-full">📦 Lagerbeholdning</Button>
