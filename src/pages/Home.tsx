@@ -26,11 +26,16 @@ export default function Home() {
                     <Link to="/register">
                         <Button className="text-lg px-6 py-3">Registrer deg</Button>
                     </Link>
+                    <p className="mt-4 text-gray-700">
+                        Har du allerede en konto?{" "}
+                        <Link to="/login" className="text-blue-500 hover:underline">
+                            Logg inn
+                        </Link>
+                    </p>
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-6">
                     <h1 className="text-3xl font-bold mb-4">Hva vil du gjøre?</h1>
-                    {/* Gjør layouten responsiv */}
                     <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md">
                         <Link to="/stockpile" className="w-full">
                             <Button className="text-xl px-8 py-4 w-full">📦 Lagerbeholdning</Button>
