@@ -72,6 +72,11 @@ export default function Stockpile() {
         }
     };
 
+    const handleAddNew = () => {
+        setNewItem({ id: null, name: "", requiredQuantity: "" }); // Nullstiller state
+        setIsDrawerOpen(true);
+    };
+
     const handleEdit = (item: StockpileItem) => {
         setNewItem({ id: item.id, name: item.name, requiredQuantity: item.requiredQuantity.toString() });
         setIsDrawerOpen(true);
@@ -101,7 +106,7 @@ export default function Stockpile() {
             {/* Knapp for å legge til ny vare */}
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                 <DrawerTrigger asChild>
-                    <Button className="mb-4">Legg til ny vare</Button>
+                    <Button onClick={handleAddNew} className="mb-4">Legg til ny vare</Button>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="p-6">
