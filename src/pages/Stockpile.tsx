@@ -7,20 +7,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { MoreVertical, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 export default function Stockpile() {
     const [items, setItems] = useState<StockpileItem[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [newItem, setNewItem] = useState<{ id: number | null; name: string; requiredQuantity: string }>({
+    const [newItem, setNewItem] = useState<{ id: number | null; name: string; requiredQuantity: string; shops: string[] }>({
         id: null,
         name: "",
         requiredQuantity: "",
+        shops: []
     });
     const [itemToDelete, setItemToDelete] = useState<StockpileItem | null>(null);
+    const [shopInput, setShopInput] = useState("");
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -40,6 +43,20 @@ export default function Stockpile() {
         setNewItem({ ...newItem, [e.target.name]: e.target.value });
     };
 
+    const handleAddShop = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && shopInput.trim() !== "") {
+            e.preventDefault();
+            if (!newItem.shops.includes(shopInput.trim())) {
+                setNewItem({ ...newItem, shops: [...newItem.shops, shopInput.trim()] });
+            }
+            setShopInput(""); // Tøm inputfeltet
+        }
+    };
+
+    const handleRemoveShop = (shop: string) => {
+        setNewItem({ ...newItem, shops: newItem.shops.filter((s) => s !== shop) });
+    };
+
     const handleSubmit = async () => {
         if (!newItem.name || !newItem.requiredQuantity) {
             alert("Vennligst fyll ut alle feltene.");
@@ -53,6 +70,7 @@ export default function Stockpile() {
                     id: newItem.id,
                     name: newItem.name,
                     requiredQuantity: parseInt(newItem.requiredQuantity, 10),
+                    shops: newItem.shops,
                 });
                 setItems(items.map((item) => (item.id === updatedItem.id ? updatedItem : item)));
             } else {
@@ -60,11 +78,12 @@ export default function Stockpile() {
                 const createdItem = await addStockpileItem({
                     name: newItem.name,
                     requiredQuantity: parseInt(newItem.requiredQuantity, 10),
+                    shops: newItem.shops,
                 });
                 setItems([...items, createdItem]);
             }
 
-            setNewItem({ id: null, name: "", requiredQuantity: "" });
+            setNewItem({ id: null, name: "", requiredQuantity: "", shops: [] });
             setIsDrawerOpen(false);
         } catch (err) {
             console.error(err);
@@ -73,12 +92,17 @@ export default function Stockpile() {
     };
 
     const handleAddNew = () => {
-        setNewItem({ id: null, name: "", requiredQuantity: "" }); // Nullstiller state
+        setNewItem({ id: null, name: "", requiredQuantity: "", shops: [] }); // Nullstiller state
         setIsDrawerOpen(true);
     };
 
     const handleEdit = (item: StockpileItem) => {
-        setNewItem({ id: item.id, name: item.name, requiredQuantity: item.requiredQuantity.toString() });
+        setNewItem({
+            id: item.id,
+            name: item.name,
+            requiredQuantity: item.requiredQuantity.toString(),
+            shops: item.shops || [],
+        });
         setIsDrawerOpen(true);
     };
 
@@ -111,11 +135,33 @@ export default function Stockpile() {
                 <DrawerContent>
                     <div className="p-6">
                         <DialogTitle className="text-xl font-bold mb-4">{newItem.id ? "Rediger vare" : "Legg til vare"}</DialogTitle>
+                        <DialogDescription className="mb-4">
+                            Fyll inn informasjon om varen. Du kan legge til butikker ved å skrive og trykke Enter.
+                        </DialogDescription>
+
                         <Label>Produktnavn</Label>
                         <Input name="name" value={newItem.name} onChange={handleInputChange} placeholder="F.eks. Ris, Hermetikk" className="mb-4" />
+
                         <Label>Antall vi skal ha</Label>
                         <Input name="requiredQuantity" type="number" value={newItem.requiredQuantity} onChange={handleInputChange} placeholder="Antall" className="mb-4" />
-                        <Button onClick={handleSubmit} className="w-full">{newItem.id ? "Oppdater" : "Lagre"}</Button>
+
+                        <Label>Butikker</Label>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                            {newItem.shops.map((shop) => (
+                                <Badge key={shop} className="flex items-center gap-2">
+                                    {shop}
+                                    <X className="h-4 w-4 cursor-pointer" onClick={() => handleRemoveShop(shop)} />
+                                </Badge>
+                            ))}
+                        </div>
+                        <Input
+                            value={shopInput}
+                            onChange={(e) => setShopInput(e.target.value)}
+                            onKeyDown={handleAddShop}
+                            placeholder="Skriv butikknavn og trykk Enter"
+                        />
+
+                        <Button onClick={handleSubmit} className="w-full mt-4">{newItem.id ? "Oppdater" : "Lagre"}</Button>
                     </div>
                 </DrawerContent>
             </Drawer>
@@ -127,10 +173,11 @@ export default function Stockpile() {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Produktnavn</TableHead>
-                        <TableHead>Antall vi har</TableHead>
-                        <TableHead>Antall vi skal ha</TableHead>
-                        <TableHead>Mangel</TableHead>
-                        <TableHead>Handling</TableHead>
+                        <TableHead>Har</TableHead>
+                        <TableHead>Skal ha</TableHead>
+                        <TableHead>Mangler</TableHead>
+                        <TableHead>Butikker</TableHead>
+                        <TableHead></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -142,6 +189,7 @@ export default function Stockpile() {
                             <TableCell className={item.requiredQuantity - (item.latestStocktaking ?? 0) > 0 ? "text-red-500" : "text-green-500"}>
                                 {item.requiredQuantity - (item.latestStocktaking ?? 0)}
                             </TableCell>
+                            <TableCell>{item.shops?.join(", ") || "-"}</TableCell>
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -163,8 +211,9 @@ export default function Stockpile() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Bekreft sletting</DialogTitle>
+                        <DialogDescription>Er du sikker på at du vil slette "{itemToDelete?.name}"? Denne handlingen kan
+                            ikke angres.</DialogDescription>
                     </DialogHeader>
-                    <p>Er du sikker på at du vil slette "{itemToDelete?.name}"?</p>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Avbryt</Button>
                         <Button variant="destructive" onClick={handleDelete}>Slett</Button>
