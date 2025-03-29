@@ -1,4 +1,6 @@
 import apiClient from "./apiClient";
+import {EditableStockpileItem} from "@/types.ts";
+
 
 export interface StockpileItem {
     id: number;
@@ -6,6 +8,11 @@ export interface StockpileItem {
     requiredQuantity: number;
     latestStocktaking?: number;
     shops: string[];
+}
+
+export interface ShopInfo {
+    id: number;
+    name: string;
 }
 
 // Hent alle varer
@@ -20,7 +27,7 @@ export const getStockpileItems = async (): Promise<StockpileItem[]> => {
 };
 
 // Legg til ny vare
-export const addStockpileItem = async (data: { name: string; requiredQuantity: number; shops: string[] }): Promise<StockpileItem> => {
+export const addStockpileItem = async (data: Omit<EditableStockpileItem, "id">): Promise<StockpileItem> => {
     try {
         console.log("addStockpileItem", data);
         const response = await apiClient.post("/stockpile", data );
@@ -32,7 +39,7 @@ export const addStockpileItem = async (data: { name: string; requiredQuantity: n
 };
 
 // Oppdater en vare
-export const updateStockpileItem = async (data: { id: number; name: string; requiredQuantity: number; shops: string[] }): Promise<StockpileItem> => {
+export const updateStockpileItem = async (data: EditableStockpileItem): Promise<StockpileItem> => {
     try {
         const response = await apiClient.put(`/stockpile/${data.id}`, {
             name: data.name,
@@ -53,5 +60,15 @@ export const deleteStockpileItem = async (id: number): Promise<void> => {
     } catch (error) {
         console.error(error);
         throw error;
+    }
+};
+
+export const getAvailableShops = async (): Promise<ShopInfo[]> => {
+    try {
+        const response = await apiClient.get("/shops");
+        return response.data.shops;
+    } catch (error) {
+        console.error("Kunne ikke hente butikker:", error);
+        return [];
     }
 };
