@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseUrl = `${import.meta.env.VITE_API_URL}/api`;
+
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api", // Endre hvis backend kjører på en annen port
+    baseURL: `${baseUrl}`,
     headers: {
         "Content-Type": "application/json",
     },
