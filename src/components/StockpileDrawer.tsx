@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {DialogTitle, DialogDescription} from "@/components/ui/dialog.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Label} from "@/components/ui/label.tsx";
@@ -22,6 +22,19 @@ export default function StockpileDrawer({setOpen, setItems, selectedItem}: Stock
         requiredQuantity: 0,
         shops: []
     });
+
+    useEffect(() => {
+        if (selectedItem) {
+            setNewItem(selectedItem);
+        } else {
+            setNewItem({
+                id: null,
+                name: "",
+                requiredQuantity: 0,
+                shops: [],
+            });
+        }
+    }, [selectedItem]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewItem({...newItem, [e.target.name]: e.target.value});

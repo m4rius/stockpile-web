@@ -31,7 +31,13 @@ export default function Stockpile() {
     }, []);
 
     const handleAddNew = () => {
-        setSelectedItem(null);
+        setSelectedItem({
+            id: 0,
+            latestStocktaking: 0,
+            name: "",
+            requiredQuantity: 0,
+            shops: []
+        });
         setIsDrawerOpen(true);
     };
 
@@ -72,18 +78,28 @@ export default function Stockpile() {
                     <Button onClick={handleAddNew} className="mb-4">Legg til ny vare</Button>
                 </DrawerTrigger>
 
-                <StockpileDrawer open={isDrawerOpen} setOpen={setIsDrawerOpen} setItems={setItems}
-                                 selectedItem={selectedItem}/>
-
+                <StockpileDrawer
+                    open={isDrawerOpen}
+                    setOpen={setIsDrawerOpen}
+                    setItems={setItems}
+                    selectedItem={selectedItem}
+                />
             </Drawer>
-
-            {/* Varetabel */}
             {error && <p className="text-red-500">{error}</p>}
+            <StockpileTable
+                items={items}
+                handleEdit={handleEdit}
+                setItemToDelete={setItemToDelete}
+                setIsDrawerOpen={setIsDrawerOpen}
+                setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+            />
 
-            <StockpileTable items={items} handleEdit={handleEdit} setItemToDelete={setItemToDelete} setIsDrawerOpen={setIsDrawerOpen} setIsDeleteDialogOpen={setIsDeleteDialogOpen} />
-
-            <ConfirmDeleteDialog open={isDeleteDialogOpen} setOpen={setIsDeleteDialogOpen} onConfirm={handleDelete}
-                                 itemName={itemToDelete?.name}/>
+            <ConfirmDeleteDialog
+                open={isDeleteDialogOpen}
+                setOpen={setIsDeleteDialogOpen}
+                onConfirm={handleDelete}
+                itemName={itemToDelete?.name}
+            />
         </div>
     );
 }

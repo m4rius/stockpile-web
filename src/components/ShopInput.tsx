@@ -19,10 +19,7 @@ export default function ShopInput({ newItem, setNewItem }: ShopInputProps) {
 
     useEffect(() => {
         const fetchShops = async () => {
-            console.log("Fetching shops");
             const shops = await getAvailableShops();
-            console.log("Shops done")
-            console.log(shops);
             setAllShops(shops );
         };
         fetchShops();
@@ -31,9 +28,6 @@ export default function ShopInput({ newItem, setNewItem }: ShopInputProps) {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setShopInput(e.target.value);
         if (e.target.value.length > 0) {
-            console.log("handleInputChange", e.target.value);
-            console.log(e.target.value);
-            console.log(allShops);
             const filteredShops = allShops.filter((shop) =>
                 shop.name.toLowerCase().startsWith(e.target.value.toLowerCase())
             );

@@ -29,7 +29,6 @@ export const getStockpileItems = async (): Promise<StockpileItem[]> => {
 // Legg til ny vare
 export const addStockpileItem = async (data: Omit<EditableStockpileItem, "id">): Promise<StockpileItem> => {
     try {
-        console.log("addStockpileItem", data);
         const response = await apiClient.post("/stockpile", data );
         return response.data;
     } catch (error) {
