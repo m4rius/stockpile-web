@@ -26,7 +26,7 @@ export default function StockpileTable({
                     <TableHead>Produktnavn</TableHead>
                     <TableHead>Har</TableHead>
                     <TableHead>Skal ha</TableHead>
-                    <TableHead>Mandler</TableHead>
+                    <TableHead>Mangler</TableHead>
                     <TableHead>Butikker</TableHead>
                     <TableHead></TableHead>
                 </TableRow>
